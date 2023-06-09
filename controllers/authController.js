@@ -10,8 +10,7 @@ export const registerUser = async (req, res) => {
     await user.save();
     res.status(201).json({ message: 'Successfully created account' });
   } catch (error) {
-    res.status(400);
-    throw new Error('User already exists');
+    res.status(400).json({ error: 'User already exists' });
   }
 };
 
@@ -25,7 +24,9 @@ export const loginUser = async (req, res) => {
     if (user && (await user.matchPassword(password))) {
       res.json({ token: generateToken(user._id) });
     }
-  } catch (error) {}
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid username or password' });
+  }
 };
 
 function generateToken(id) {
